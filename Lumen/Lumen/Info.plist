@@ -8,6 +8,12 @@
 		<string>fetch</string>
 		<string>processing</string>
 	</array>
+	
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.ayaangrover.lumen.refresh</string>
+	</array>
+
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Lumen needs access to your microphone to record audio for notes.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

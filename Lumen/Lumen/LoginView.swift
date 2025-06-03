@@ -22,6 +22,7 @@ struct LoginView: View {
     @State private var showFeatures = false
     @State private var showTestimonial = false
     @State private var showSignInButton = false
+    @State private var showGuestButton = false
     @State private var selectedFeatureIndex = 0
 
     let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
@@ -110,43 +111,60 @@ struct LoginView: View {
             
             Spacer()
             
-            SignInWithAppleButton(
-                .signUp,
-                onRequest: { request in
-                    request.requestedScopes = [.fullName, .email]
-                },
-                onCompletion: { result in
-                    switch result {
-                    case .success(let authorization):
-                        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-                            let userIdentifier = appleIDCredential.user
-                            let fullName = appleIDCredential.fullName
-                            let email = appleIDCredential.email
-                            
-                            let firstName = fullName?.givenName
-                            let lastName = fullName?.familyName
-                            var nameParts: [String] = []
-                            if let first = firstName { nameParts.append(first) }
-                            if let last = lastName { nameParts.append(last) }
-                            let formattedName = nameParts.joined(separator: " ")
-
-                            print("User ID: \(userIdentifier)")
-                            print("User Name: \(formattedName)")
-                            print("User Email: \(email ?? "Not provided")")
-                            
-                            onLogin(formattedName.isEmpty ? nil : formattedName, email)
-                        }
-                    case .failure(let error):
-                        print("Apple Sign In Error: \(error.localizedDescription)")
-                    }
+            VStack(spacing: 15) {
+                Button {
+                    onLogin(nil, nil)
+                } label: {
+                    Text("Continue as Guest")
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(Color.gray.opacity(0.2))
+                        .foregroundColor(Color.primary)
+                        .cornerRadius(10)
                 }
-            )
-            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-            .frame(width: 280, height: 50)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .frame(width: 280)
+                .opacity(showGuestButton ? 1 : 0)
+                .offset(y: showGuestButton ? 0 : 20)
+
+                SignInWithAppleButton(
+                    .signUp,
+                    onRequest: { request in
+                        request.requestedScopes = [.fullName, .email]
+                    },
+                    onCompletion: { result in
+                        switch result {
+                        case .success(let authorization):
+                            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+                                let userIdentifier = appleIDCredential.user
+                                let fullName = appleIDCredential.fullName
+                                let email = appleIDCredential.email
+                                
+                                let firstName = fullName?.givenName
+                                let lastName = fullName?.familyName
+                                var nameParts: [String] = []
+                                if let first = firstName { nameParts.append(first) }
+                                if let last = lastName { nameParts.append(last) }
+                                let formattedName = nameParts.joined(separator: " ")
+
+                                print("User ID: \(userIdentifier)")
+                                print("User Name: \(formattedName)")
+                                print("User Email: \(email ?? "Not provided")")
+                                
+                                onLogin(formattedName.isEmpty ? nil : formattedName, email)
+                            }
+                        case .failure(let error):
+                            print("Apple Sign In Error: \(error.localizedDescription)")
+                        }
+                    }
+                )
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                .frame(width: 280, height: 50)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .opacity(showSignInButton ? 1 : 0)
+                .offset(y: showSignInButton ? 0 : 20)
+            }
             .padding(.bottom, 50)
-            .opacity(showSignInButton ? 1 : 0)
-            .offset(y: showSignInButton ? 0 : 20)
         }
         .padding(.horizontal)
         .background(Color(UIColor.systemBackground).edgesIgnoringSafeArea(.all))
@@ -165,6 +183,7 @@ struct LoginView: View {
             }
             withAnimation(.easeOut(duration: 0.7).delay(0.8)) {
                 showSignInButton = true
+                showGuestButton = true
             }
         }
     }

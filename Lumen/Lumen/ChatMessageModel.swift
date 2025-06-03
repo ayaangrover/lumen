@@ -1,23 +1,26 @@
-
 import Foundation
 import SwiftData
 
 @Model
 final class ChatMessageModel {
-    var id: UUID
-    var timestamp: Date
-    var roleValue: String
-    var content: String
+    var id: UUID = UUID()
+    var timestamp: Date = Date()
+    var roleValue: String = "user"
+    var content: String = ""
 
     enum Role: String {
         case user, assistant
     }
 
+    @Transient
     var role: Role {
-        return Role(rawValue: roleValue) ?? .user
+        Role(rawValue: roleValue) ?? .user
     }
 
-    init(id: UUID = UUID(), timestamp: Date = Date(), role: Role, content: String) {
+    init(id: UUID = UUID(),
+         timestamp: Date = Date(),
+         role: Role = .user,
+         content: String = "") {
         self.id = id
         self.timestamp = timestamp
         self.roleValue = role.rawValue

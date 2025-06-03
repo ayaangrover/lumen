@@ -3,15 +3,15 @@ import SwiftData
 
 @Model
 final class Note {
-    var id: UUID
-    var title: String 
-    var creationDate: Date
-    var audioFilePath: String?
-    var transcription: String?
-    var summary: String?
+    var id: UUID = UUID()
+    var title: String = "Untitled"
+    var creationDate: Date = Date()
+    var audioFilePath: String? = nil
+    var transcription: String? = nil
+    var summary: String? = nil
 
     init(id: UUID = UUID(),
-         title: String = "Processing Title...",
+         title: String = "Untitled",
          creationDate: Date = Date(),
          audioFilePath: String? = nil,
          transcription: String? = nil,

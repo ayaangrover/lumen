@@ -1,6 +1,6 @@
 import Foundation
 
-let groqAPIKey = "API_KEY"
+let groqAPIKey = "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"
 
 struct GroqResponse: Codable {
     struct Choice: Codable {
